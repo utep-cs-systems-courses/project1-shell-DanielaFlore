@@ -5,7 +5,7 @@
 
 Lab 1
 
-#TODO write comments
+
 """
 #! /usr/bin/env python3
 
@@ -16,6 +16,7 @@ def path(parent):
     for dir in re.split(':', os.environ['PATH']): 
         program = "%s/%s" % (dir, parent[0])
         try:
+            #executes process
             os.execve(program, parent, os.environ) 
         except FileNotFoundError:                  
             pass                                   
@@ -23,6 +24,7 @@ def path(parent):
     sys.exit(1)                                    
 #handles indirection '<' '>'
 def indir(symbol, number, userInput):
+    #splits user input by '<' or '>'
     input = userInput.split(symbol)
     os.close(number)
     if symbol == '>':
@@ -36,9 +38,11 @@ def indir(symbol, number, userInput):
     path(parent)
         
 while True:
+    #checks if PS1 is set
     if 'PS1' in os.environ:
         os.write(1, (os.environ['PS1']).encode())
     else:
+        #default prompt
         os.write(1, ('$ ').encode())
     try:
         userInput = input()
@@ -48,14 +52,16 @@ while True:
     if userInput == "":
         continue
     #terminate
-    if 'exit' in userInput: 
+    elif 'exit' in userInput: 
         sys.exit(0)
     #change directory
-    if 'cd' in userInput:
+    elif 'cd' in userInput:
         splitInput = userInput.split()
         changeDir = splitInput[1]
         os.chdir(changeDir)
-    
+    else:
+        print("command not found!")
+        
     pid = os.fork()
     #if fork fails
     if pid < 0:
@@ -76,7 +82,7 @@ while True:
             if pipFork < 0:
                 os.write(2, ('Fork failed').encode())
                 sys.exit(1)
-
+            #child
             if pipFork == 0:
                 os.close(1) 
                 os.dup(pWrite)
@@ -84,7 +90,7 @@ while True:
                 for fd in (pRead, pWrite):
                     os.close(fd)
                 path(commands)
-
+            #parent
             else: 
                 os.close(0)
                 os.dup(pRead)
@@ -108,5 +114,8 @@ while True:
                     pass
             else:
                 path(parent)
+            
+
+
             
 
