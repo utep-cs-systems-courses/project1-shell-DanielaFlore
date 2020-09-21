@@ -1,11 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-
 @author: Flores Daniela
-
 Lab 1
-
-
 """
 #! /usr/bin/env python3
 
@@ -45,19 +41,18 @@ while True:
         #default prompt
         os.write(1, ('$ ').encode())
     try:
-        userInput = input()
+        userInput = os.read(0,128)
     except EOFError:
         sys.exit(1)
     #empty
-    if userInput == "":
+    if len(userInput) == 0:
         continue
     #terminate
-    elif 'exit' in userInput: 
+    elif 'exit' == userInput[0]: 
         sys.exit(0)
     #change directory
-    elif 'cd' in userInput:
-        splitInput = userInput.split()
-        changeDir = splitInput[1]
+    elif 'cd' == userInput[0]:
+        changeDir = userInput[1]
         os.chdir(changeDir)
     else:
         print("command not found!")
@@ -114,8 +109,5 @@ while True:
                     pass
             else:
                 path(parent)
-            
-
-
             
 
